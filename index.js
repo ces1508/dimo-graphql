@@ -76,6 +76,28 @@ const typeDefs = gql`
     menu: [MenuItem]
     emailContac: String
     tags: [String]
+    locations: [Location]
+  }
+
+  type Location {
+    id: ID
+    latitude: Float
+    longitude: Float
+    name: String
+    description: String
+    address: String
+    city: String
+    country: String
+    region: String
+    neighboorhood: String
+    telephones: [String]
+    cellphones: [String]
+    principalEmail: String
+    otherEmails: [String]
+    locationType: String
+    visible: Boolean
+    brandId: ID
+    webpage: String
   }
 
   # input Pagination {
