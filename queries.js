@@ -19,7 +19,11 @@ const getProducts = async (parent, args, context, info) => {
 
 const getBrands = async (parent, args, context, inf) => {
   let brands = await context.dataSources.dimoApi.getBrands(args.page)
-  brands = brands.map(brand => parseBrand({ id: brand.id, ...brand.attributes }))
+  brands = brands.map(brand => parseBrand({
+    id: brand.id,
+    ...brand.attributes
+  }))
+  console.log(brands[0].location)
   return brands
 }
 
@@ -48,7 +52,8 @@ function parseBrand (brand) {
     slug: brand.slug,
     tags: brand.tags,
     shippingTypes: brand['shipping-type'] || brand.shipping_type,
-    menu: menu.map(menu => parseMenu(menu))
+    menu: menu.map(menu => parseMenu(menu)),
+    locations: brand.locations.map(location => parseLocation(location))
   }
 }
 
@@ -58,6 +63,26 @@ const parseMenu = menu => ({
   order: menu.order,
   banner: menu['banner-img'] || menu.banner_img,
   product: menu['banner-product-id'] || menu.banner_product_id
+})
+
+const parseLocation = location => ({
+  id: location.id,
+  latitude: location.latitude,
+  longitude: location.longitude,
+  name: location.name,
+  description: location.description,
+  address: location.address,
+  city: location.city.city,
+  region: location.region,
+  country: location.country,
+  neighboorhood: location.neighboorhood,
+  telephones: location.telephones,
+  cellphones: location.cellphones,
+  principalEmail: location['prinicipal-email'] || location.principal_email,
+  otherEmails: location['other-emails'] || location.other_emails,
+  type: location['location-type'] || location.location_type,
+  webpage: location.webpage,
+  visible: location.visible
 })
 
 module.exports = {
