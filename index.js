@@ -1,6 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
 const { DimoApi } = require('./lib/')
-const { getProducts } = require('./queries')
+const { getProducts, getBrands } = require('./queries')
 
 const typeDefs = gql`
 
@@ -11,12 +11,14 @@ const typeDefs = gql`
   }
 
   type Product {
-    name: String!
+    id: ID
+    name: String
     description: String
     type: ProductType
     outstanding: Boolean
-    quantity: Int,
+    quantity: Int
     imageData: Image
+    brand: Brand
   }
 
   type Image {
@@ -28,8 +30,61 @@ const typeDefs = gql`
     url: String
   }
 
+  type SocialMedia {
+    facebook: String
+    instagram: String
+    general: String
+  }
+
+  type ShippingType {
+    name: String
+    price: Int
+  }
+
+  type MenuItem {
+    id: Int
+    name: String
+    order: Int
+    banner: ImageWithUrl
+    product: ID
+  }
+
+  type Brand {
+    id: ID
+    name: String
+    logo: Image
+    description: String
+    slogan: String
+    city: String
+    country: String
+    region: String
+    score: Int
+    slug: String
+    customInstance: Boolean
+    principalColor: String
+    secondaryColor: String
+    tertiaryColor: String
+    principalImage: Image
+    secondaryImage: Image
+    promotionalBanner: Image
+    navbarLogo: Image
+    socialMedia: SocialMedia
+    shippingTypes: [ShippingType]
+    isFavorite: Boolean
+    isRestaurant: Boolean
+    visible: Boolean
+    menu: [MenuItem]
+    emailContac: String
+    tags: [String]
+  }
+
+  # input Pagination {
+  #   page: Int = 1
+  # }
+
   type Query {
     products (page: Int = 1): [Product]
+    brands (page: Int = 1): [Brand]
   }
 `
 const resolvers = {
@@ -39,7 +94,8 @@ const resolvers = {
     PLATE: 'RESTAURANT'
   },
   Query: {
-    products: getProducts
+    products: getProducts,
+    brands: getBrands
   }
 }
 
