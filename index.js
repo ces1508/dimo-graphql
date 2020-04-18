@@ -1,6 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
 const { DimoApi } = require('./lib/')
-const { getProducts, getBrands } = require('./queries')
+const { getProducts, getBrands, getHomeProducts, getHomePlates } = require('./queries')
 
 const typeDefs = gql`
 
@@ -19,6 +19,7 @@ const typeDefs = gql`
     quantity: Int
     imageData: Image
     brand: Brand
+    price: Float
   }
 
   type Image {
@@ -107,6 +108,8 @@ const typeDefs = gql`
   type Query {
     products (page: Int = 1): [Product]
     brands (page: Int = 1): [Brand]
+    homePlates: [Product]
+    homeProducts: [Product]
   }
 `
 const resolvers = {
@@ -117,7 +120,9 @@ const resolvers = {
   },
   Query: {
     products: getProducts,
-    brands: getBrands
+    brands: getBrands,
+    homePlates: getHomePlates,
+    homeProducts: getHomeProducts
   }
 }
 

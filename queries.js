@@ -27,8 +27,23 @@ const getBrands = async (parent, args, context, inf) => {
   return brands
 }
 
+
+const getHomePlates = async (parent, args, context, info) => {
+  let plates = await context.dataSources.dimoApi.getHomePlates()
+  plates = parseProduct(plates)
+  return plates
+}
+
+const getHomeProducts = async (parent, args, context, info) => {
+  let products = await context.dataSources.dimoApi.getHomeProducts()
+  products = parseProduct(products)
+  return products
+}
+
+
 function parseBrand (brand) {
-  let menu = brand['brand-menus'] || brand.brand_menus
+  let menu = brand['brand-menus'] || brand.brand_menus || []
+  let locations = brand.locations || []
   return {
     id: brand.id,
     name: brand.name,
@@ -53,7 +68,7 @@ function parseBrand (brand) {
     tags: brand.tags,
     shippingTypes: brand['shipping-type'] || brand.shipping_type,
     menu: menu.map(menu => parseMenu(menu)),
-    locations: brand.locations.map(location => parseLocation(location))
+    locations: locations.map(location => parseLocation(location))
   }
 }
 
@@ -85,7 +100,21 @@ const parseLocation = location => ({
   visible: location.visible
 })
 
+function parseProduct (products) {
+  return [...products].map(product => ({
+    id: product.id,
+    type: product.attributes['product-type'].toUpperCase(),
+    imageData: product.attributes['image-data'],
+    brand: {
+      ...parseBrand(product.attributes.brand)
+    },
+    ...product.attributes
+  }))
+}
+
 module.exports = {
   getProducts,
-  getBrands
+  getBrands,
+  getHomePlates,
+  getHomeProducts
 }
